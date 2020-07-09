@@ -7,7 +7,7 @@
 #pragma comment(lib,"ws2_32.lib")
 #define PORT 10001
 #define BUFSIZE 100
-char buffer[1000] = {"9\0\0\0@3@/contain@basic@st@0@0@int@p@1@0@long double@ldar@0@128" }; //1~3번중 선택지 제공
+char buffer[1000] = {"\n""\t1)1번 선택\n" "\t2)2번 선택\n" "\t3)3번 선택\n"}; //1~3번중 선택지 제공
 char rcvbuffer[BUFSIZE]; //선택한 번호를 클라이언트에게 전송하기위한 배열
 int main(void) {
 	int c_socket, s_socket;
@@ -59,8 +59,25 @@ int main(void) {
 		//선택하는 내용 보내기
 		send(c_socket, buffer, strlen(buffer), 0);
 		//선택한 내용 읽어오기
+		n = recv(c_socket, message, 1, 0);
+		message[n] = '\0';
+		printf("client: %s \n",message);
 		
-		
+		if (strcmp(message,"1")==0) {
+			strcpy(rcvbuffer, "1번을 선택했습니다.");
+			printf("server: 1번을 선택했습니다.");
+			send(c_socket, rcvbuffer, strlen(rcvbuffer), 0);
+		}
+		else if (strcmp(message,"2")==0) {
+			strcpy(rcvbuffer, "2번을 선택했습니다.");
+			printf("server: 2번을 선택했습니다.");
+			send(c_socket, rcvbuffer, strlen(rcvbuffer), 0);
+		}
+		else {
+			strcpy(rcvbuffer, "3번을 선택했습니다.");
+			printf("server: 3번을 선택했습니다.");
+			send(c_socket, rcvbuffer, strlen(rcvbuffer), 0);
+		}
 		closesocket(c_socket);
 	}
 	closesocket(s_socket);

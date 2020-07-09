@@ -36,7 +36,7 @@ int main() {
 	while (1) {
 		//5. 서버에서 보낸 메시지 읽기 
 		n = recv(c_socket, rcvBuffer, sizeof(rcvBuffer), 0);
-		rcvBuffer[n] = '\0'; //문자열 뒷부분 깨짐 방지
+		rcvBuffer[n] = '\0';
 		printf("server: %s\n", rcvBuffer); //서버에서 받은 메세지 출력
 		//printf("rcvBuffer length: %d\n", n); //3-2. 서버에섭 다은 메세지의 길이 출력 
 		//서버에서 받은 메세지를 토대로 보내기
