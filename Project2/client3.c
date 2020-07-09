@@ -38,6 +38,7 @@ int main() {
 	recv(c_socket,&i, sizeof(int), 0);
 	recv(c_socket, rcvBuffer, i, 0);
 	rcvBuffer[i] = '\0';
+	//rcvBuffer마지막 i번지에 문자열 깨짐 방지
 	printf("received data: %s\n",rcvBuffer); //서버에서 받은 메세지 출력
 	printf("received data: %s\n", rcvBuffer); //서버에서 받은 메세지 출력
 	

@@ -52,6 +52,8 @@ int main(void) {
 	while (1) { //무한 루프
 		
 		send(c_socket, sendbuf, sizeof(sendbuf), 0);
+		//sizeof(sendbuf)라 안하고 strlen(sendbuf)로 해서 계속 오류
+		//strlen은 \0 단위로 복사함
 
 		closesocket(c_socket);
 	}
