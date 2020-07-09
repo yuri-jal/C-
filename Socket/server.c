@@ -59,26 +59,8 @@ int main(void) {
 		//선택하는 내용 보내기
 		send(c_socket, buffer, strlen(buffer), 0);
 		//선택한 내용 읽어오기
-		n = recv(c_socket, message, sizeof(message),0);
-		message[n] = '\0'; //개행 문자 삭제
-		printf("client: %s\n", message);
 		
-		//몇번을 선택했는지 알려주고 클라이언트에게 전송
-		if (strcmp(message, "1") == 0) {
-			strcpy(rcvbuffer, "1번을 선택했습니다");
-			printf("1번을 선택했습니다.");
-			send(c_socket, rcvbuffer, strlen(rcvbuffer), 0);
-		}
-		else if (strcmp(message, "2") == 0) {
-			printf("2번을 선택했습니다.");
-			strcpy(rcvbuffer, "2번을 선택했습니다");
-			send(c_socket, rcvbuffer, strlen(rcvbuffer), 0);
-		}
-		else {
-			printf("3번을 선택했습니다.");
-			strcpy(rcvbuffer, "3번을 선택했습니다");
-			send(c_socket, rcvbuffer, strlen(rcvbuffer), 0);
-		}
+		
 		closesocket(c_socket);
 	}
 	closesocket(s_socket);
