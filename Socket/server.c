@@ -7,7 +7,7 @@
 #pragma comment(lib,"ws2_32.lib")
 #define PORT 10001
 #define BUFSIZE 100
-char buffer[100] = {"\n" "\t1)1번 선택\n" "\t2)2번 선택\n" "\t3)3번 선택\n" }; //1~3번중 선택지 제공
+char buffer[1000] = {"9\0\0\0@3@/contain@basic@st@0@0@int@p@1@0@long double@ldar@0@128" }; //1~3번중 선택지 제공
 char rcvbuffer[BUFSIZE]; //선택한 번호를 클라이언트에게 전송하기위한 배열
 int main(void) {
 	int c_socket, s_socket;
