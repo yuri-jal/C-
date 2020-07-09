@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <winsock2.h>
 #include <Windows.h>
+#include <stdlib.h>
 
 #pragma comment(lib,"ws2_32.lib")
 #define PORT 10001
@@ -14,9 +15,8 @@ int main() {
 	struct sockaddr_in c_addr;
 	int n;
 	char rcvBuffer[BUFSIZE];//서버에서 보내준 메세지를 저장하는 변수
-	char sendBuffer[BUFSIZE] = "Hi, Server.";
+	char sendBuffer[BUFSIZE];
 	WSADATA wsadata;
-
 	WSAStartup(MAKEWORD(2, 0), &wsadata);
 	//1. 클라이언트 소켓 생성
 	c_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED); //서버와 동일한 설정으로 생성
@@ -33,13 +33,21 @@ int main() {
 		//closesocket(c_socket); //자원 회수
 		return -1;  //프로세스 종료
 	}
-
-	//5. 서버에서 보낸 메시지 읽기 
-	n = recv(c_socket, rcvBuffer, sizeof(rcvBuffer), 0);
-	rcvBuffer[n] = '\0'; //문자열 뒷부분 깨짐 방지
-	printf("received data: %s\n", rcvBuffer); //서버에서 받은 메세지 출력
-	printf("rcvBuffer length: %d\n", n); //3-2. 서버에섭 다은 메세지의 길이 출력 
-
-	closesocket(c_socket);
+	while (1) {
+		//5. 서버에서 보낸 메시지 읽기 
+		n = recv(c_socket, rcvBuffer, sizeof(rcvBuffer), 0);
+		rcvBuffer[n] = '\0'; //문자열 뒷부분 깨짐 방지
+		printf("server: %s\n", rcvBuffer); //서버에서 받은 메세지 출력
+		//printf("rcvBuffer length: %d\n", n); //3-2. 서버에섭 다은 메세지의 길이 출력 
+		//서버에서 받은 메세지를 토대로 보내기
+		printf("client: ");
+		gets(sendBuffer);
+		send(c_socket, sendBuffer, (int)strlen(sendBuffer),0);
+		//서버에서 보낸 메시지 읽기
+		n = recv(c_socket, rcvBuffer, sizeof(rcvBuffer), 0);
+		rcvBuffer[n] = '\0'; //문자열 뒷부분 깨짐 방지
+		printf("server: %s\n", rcvBuffer); //서버에서 받은 메세지 출력
+		closesocket(c_socket);
+	}
 	return 0;
 }
