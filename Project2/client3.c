@@ -12,9 +12,10 @@
 int main() {
 	int c_socket;
 	struct sockaddr_in c_addr;
-	int n,i;
+	int n,i,count;
 	char rcvBuffer[BUFSIZE];//서버에서 보내준 메세지를 저장하는 변수
-	char sendBuffer[BUFSIZE];
+	char *sendBuffer[BUFSIZE] = {NULL," "};
+	char buf[256];
 	WSADATA wsadata;
 
 	WSAStartup(MAKEWORD(2, 0), &wsadata);
@@ -40,8 +41,26 @@ int main() {
 	rcvBuffer[i] = '\0';
 	//rcvBuffer마지막 i번지에 문자열 깨짐 방지
 	printf("received data: %s\n",rcvBuffer); //서버에서 받은 메세지 출력
-	printf("received data: %s\n", rcvBuffer); //서버에서 받은 메세지 출력
+	char* token = NULL;
+	token = strtok(rcvBuffer, "@");
+	int num = 0;
+	while (token != NULL) {
+		sendBuffer[num] = token;
+		num++;
+		token = strtok(NULL, "@");
 	
+	}
+	printf("경로: %s\n", sendBuffer[1]);
+	for (num = 0; num < atoi(sendBuffer[0]); num++) {
+		printf("%s  %s%s%s%s%s\n", 
+			sendBuffer[2+4*num], 
+			*sendBuffer[4+4 * num] == '1' ? "*":"",
+			sendBuffer[3+4 * num],
+			*sendBuffer[5+4 * num] == '0' ? "" : "[",
+			*sendBuffer[5+4 * num] == '0' ? "" : sendBuffer[5],
+			*sendBuffer[5+4 * num] == '0' ? "" : "]"
+			);
+	}
 	closesocket(c_socket);
 	return 0;
 }
