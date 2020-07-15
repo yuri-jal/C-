@@ -7,7 +7,26 @@ BOOL CALLBACK MyMenuProc(HWND an_dig, UINT iMessage, WPARAM wParam, LPARAM IPara
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = TEXT("hi");
+HWND hListProc, hWndMain;
+DWORD WINAPI ThreadFunc(LPVOID temp) {
+	HDC hdc;
+	BYTE Blue = 0;
+	HBRUSH hBrush, hOldBrush;
+	hdc = GetDC(hWndMain);
 
+	for (;;)
+	{
+		Blue += 5;
+		Sleep(20);
+		hBrush = CreateSolidBrush(RGB(0, 0, Blue));
+		hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+		Rectangle(hdc,10,10,400,200);
+		SelectObject(hdc, hOldBrush);
+		DeleteObject(hBrush);
+	}
+	ReleaseDC(hWndMain, hdc);
+	return 0;
+}
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
 	HWND hWnd;
@@ -27,7 +46,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;
 	RegisterClass(&WndClass);
 
-	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, 300, 50, CW_USEDEFAULT, CW_USEDEFAULT,
 		NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
@@ -39,22 +58,28 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 }
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM IParam)
 {
-	HDC hdc;
-	PAINTSTRUCT ps;
-	
-	switch (iMessage) {
-		case WM_CLOSE:
-			if (MessageBox(hWnd, "프로그램을 종료하시겠습니까?", "질문", MB_YESNO) == IDNO) {
-				return 0;
-			}
-			else {
-				break;
-			}
+	DWORD ThreadID;
+	HANDLE hThread;
+	switch (iMessage)
+	{
+		case WM_CREATE:
+			hWndMain = hWnd;
+			hThread = CreateThread(NULL, 0, ThreadFunc, NULL, 0, &ThreadID);
+			return TRUE;
 		case WM_DESTROY:
 			PostQuitMessage(0);
-		return 0;
+			return 0;
 	}
+	/*
+	if (iMessage == WM_CLOSE) {
+		int Check=MessageBox(hWnd, L"종료?", L"종료확인",MB_ICONQUESTION|MB_OKCANCEL);
+	}
+	else if (iMessage == WM_DESTROY) {
+		PostQuitMessage(0);
+	}
+	*/
 	return (DefWindowProc(hWnd, iMessage, wParam, IParam));
+
 }
 BOOL CALLBACK MyMenuProc(HWND an_dig, UINT iMessage, WPARAM wParam, LPARAM IParam){
 	//대화 상자의 메뉴나 컨트롤 항목을 선택 했을 때 발생하는 메시지
@@ -71,8 +96,12 @@ BOOL CALLBACK MyMenuProc(HWND an_dig, UINT iMessage, WPARAM wParam, LPARAM IPara
 			default:
 				break;
 			}
-	
+			break;
+		case WM_CLOSE:
+			MessageBox(NULL, TEXT("종료"), TEXT("종료"), MB_OK);
+			return FALSE;
 	}
+	return (DefWindowProc(an_dig, iMessage, wParam, IParam));
 }
 /*
 unsigned WINAPI ThreadFunction(void* para) {
