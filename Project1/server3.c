@@ -3,8 +3,8 @@
 #include <string.h>
 
 #pragma comment(lib,"ws2_32.lib")
-#define PORT 10001
-
+#define PORT 9000
+#define BUFSIZE 100
 const char sendbuf[] = "9\0\0\0@3@/contain@basic@st@0@0@int@p@1@0@long double@ldar@0@128";
 
 int main(void) {
@@ -14,7 +14,7 @@ int main(void) {
 	int len;
 	int c_socket_size;
 	WSADATA wsadata;
-	
+	char rcvBuffer[BUFSIZE];
 	WSAStartup(MAKEWORD(2, 2), &wsadata);
 	// 1. 서버 소켓 생성
 	//서버 소켓 = 클라이언트의 접속 요청을 처리(허용)해 주기 위한 소켓
@@ -48,15 +48,24 @@ int main(void) {
 	//클라이언트의 요청이 오면 허용(accept)해 주고, 해당 클라이언트와 통신할 수 있도록 클라이언트 소켓(c_socket)을 반환함.
 	printf("/client is connected\n");
 	printf("클라이언트 접속 허용\n");
-	//n = recv(c_socket, sendbuf, sizeof(sendbuf),0);
+	
 	while (1) { //무한 루프
-		
+
 		send(c_socket, sendbuf, sizeof(sendbuf), 0);
 		//sizeof(sendbuf)라 안하고 strlen(sendbuf)로 해서 계속 오류
 		//strlen은 \0 단위로 복사함
-
+		n = recv(c_socket, rcvBuffer, strlen(rcvBuffer), 0);
+		rcvBuffer[n ] = '\0';
+		printf("%s =", rcvBuffer);
+		recv(c_socket, rcvBuffer, sizeof(rcvBuffer), 0);
+		rcvBuffer[n+1] = '\0';
+		printf("%s", rcvBuffer);
 		closesocket(c_socket);
 	}
+	
+	
+	//recv(c_socket, rcvBuffer, sizeof(rcvBuffer), 0);
+	//printf("%s", n);
 	closesocket(s_socket);
 	return 0;
 }
