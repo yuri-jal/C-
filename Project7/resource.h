@@ -5,6 +5,7 @@
 #define IDD_ITEM_MENU                   9
 #define IDR_ACCELERATOR1                103
 #define IDC_LIST1                       1002
+#define g_hIdx                          1003
 #define IDC_EDIT1                       1003
 #define IDC_EDIT2                       1004
 #define ID_ACCELERATOR40001             40001
