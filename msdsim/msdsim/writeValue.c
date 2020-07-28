@@ -143,18 +143,21 @@ static LRESULT CALLBACK writeWndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LP
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
-				if (SendMessage(tpsEdit, EM_LINELENGTH, 0, 0) <= 0) {
-					EnableWindow(okBtn, FALSE);
-				}//tpsEdit에 입력되어있는 글자크기를 EM_LINELENGTH 비교하여 0이거나 작으면 확인버튼 비활성화
-				else {
+				//if (SendMessage(tpsEdit, EM_LINELENGTH, 0, 0) <= 0) {
+					//EnableWindow(okBtn, FALSE);
+				//}//tpsEdit에 입력되어있는 글자크기를 EM_LINELENGTH 비교하여 0이거나 작으면 확인버튼 비활성화
+				//else {
 					if (SendMessage(decBtn, BM_GETCHECK, 0, 0) == BST_CHECKED)
 					{
-						EnableWindow(okBtn, FALSE);
 						tpsEditorCheck();
-						
+						SendMessage(tpsEdit, EM_LINELENGTH, 0, 0);
 					}
-					EnableWindow(okBtn, TRUE);
-				}//0보다 크면 활성화
+					if (SendMessage(tpsEdit, EM_LINELENGTH, 0, 0) <= 0) {
+						EnableWindow(okBtn, FALSE);
+					}//0보다 크면 활성화
+					else {
+						EnableWindow(okBtn, TRUE);
+					}
 				
 			}
 			break;
